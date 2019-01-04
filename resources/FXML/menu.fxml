@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Separator?>
+
+<VBox prefHeight="720.0" prefWidth="1024.0" 
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="web_inria.ihm.FXMLController">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu text="File">
+          <items>
+            <MenuItem text="New" onAction="#newFilePressed"></MenuItem>
+            <MenuItem text="Open…" onAction="#openFilePressed"></MenuItem>
+            <MenuItem text="Save" />
+            <SeparatorMenuItem />
+            <MenuItem text="Close" />
+            <MenuItem text="Run Jekyll" />
+            <MenuItem text="Push git" />
+            <SeparatorMenuItem />
+            <MenuItem text="Preferences…" />
+            <SeparatorMenuItem />
+            <MenuItem text="Quit" />
+          </items>
+        </Menu>
+        <Menu text="Edit">
+          <items>
+            <SeparatorMenuItem />
+            <MenuItem text="Add picture" />
+            <MenuItem text="Add link" />
+            <MenuItem text="Delete" />
+            <SeparatorMenuItem />
+            <MenuItem text="Select All" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <BorderPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <padding>
+        <Insets top="5" right="8" bottom="8" left="8"/>
+      </padding>
+      <top>
+        <VBox layoutX="15.0" layoutY="10.0" spacing="7.0">
+          <padding>
+            <Insets top="0" right="0" bottom="8" left="0"/>
+          </padding>
+          <FlowPane hgap="12.0">
+            <HBox prefHeight="40.0" spacing="10.0" alignment="CENTER_LEFT">
+              <Label text="Title:"/>
+              <TextField prefWidth="400.0" fx:id="titleField" />
+            </HBox>
+            <HBox prefHeight="40.0" spacing="10.0" alignment="CENTER_LEFT">
+              <Label text="Date:"/>
+              <DatePicker prefWidth="200.0" fx:id="datePicker" />
+            </HBox>
+            <HBox prefHeight="40.0" spacing="10.0" alignment="CENTER_LEFT">
+              <Label text="Author(s):"/>
+              <TextField prefWidth="500.0" fx:id="authorField" />
+            </HBox>
+            <HBox prefHeight="40.0" spacing="10.0" alignment="CENTER_LEFT">
+              <Label text="Category:"/>
+              <ComboBox prefWidth="150.0" fx:id="categoryComboBox" editable="true"/>
+            </HBox>
+            <HBox prefHeight="40.0" spacing="10.0" alignment="CENTER_LEFT">
+              <Label text="Layout:"/>
+              <ComboBox prefWidth="150.0" fx:id="layoutComboBox"/>
+            </HBox>
+          </FlowPane>
+          <Separator />
+
+          <HBox prefHeight="40.0" spacing="6.0">
+            <Button>
+              <graphic>
+                <ImageView id="undo">
+                  <image>
+                    <Image url="@png/go-back-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button>
+              <graphic>
+                <ImageView id="boldImage">
+                  <image>
+                    <Image url="@png/bold-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button>
+              <graphic>
+                <ImageView id="italicImage">
+                  <image>
+                    <Image url="@png/italic-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button>
+              <graphic>
+                <ImageView id="underlineImage">
+                  <image>
+                    <Image url="@png/underline-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button>
+              <graphic>
+                <ImageView id="headerImage">
+                  <image>
+                    <Image url="@png/text-size-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button>
+              <graphic>
+                <ImageView id="linkImage">
+                  <image>
+                    <Image url="@png/link-text-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button>
+              <graphic>
+                <ImageView id="previewImage">
+                  <image>
+                    <Image url="@png/expand-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button>
+              <graphic>
+                <ImageView id="uploadImage">
+                  <image>
+                    <Image url="@png/upload-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+          </HBox>
+        </VBox>
+      </top>
+      <center>
+        <TextArea fx:id="textArea">
+          <cursor>
+            <Cursor fx:constant="TEXT" />
+          </cursor>
+        </TextArea>
+
+      </center>
+    </BorderPane>
+  </children>
+</VBox>

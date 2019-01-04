@@ -22,10 +22,10 @@ public class Categories {
 
 	public static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 	public static File file = new File(PropertiesAccess.getInstance().getLocalRepository() 
-										+ File.separator 
-										+ "category" 
-										+ File.separator 
-										+ "categories.txt");
+			+ File.separator 
+			+ "category" 
+			+ File.separator 
+			+ "categories.txt");
 
 	/**
 	 * Method that add a category to the category.txt file

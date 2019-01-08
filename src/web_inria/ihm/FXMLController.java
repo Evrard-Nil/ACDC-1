@@ -110,7 +110,10 @@ public class FXMLController {
 		htmlView.getEngine().setUserStyleSheetLocation("file:" + PropertiesAccess.getInstance().getLocalRepository()
 				+ File.separator + "css" + File.separator + "style.css");
 	}
-
+	/**
+	 * Blank out all fields
+	 * @param e
+	 */
 	@FXML
 	public void newFilePressed(Event e) {
 		if (!saved) {
@@ -136,7 +139,11 @@ public class FXMLController {
 	public void setStage(Stage s) {
 		this.stage = s;
 	}
-
+	/**
+	 * Opens a file manager and fill different fields with article data
+	 * @param e
+	 * @throws IOException
+	 */
 	@FXML
 	public void openFilePressed(Event e) throws IOException {
 		
@@ -171,6 +178,7 @@ public class FXMLController {
 			try {
 				this.layoutComboBox.setValue(this.layout);
 				this.titleField.setText(this.title);
+		
 				this.datePicker.setValue(LocalDate.parse(this.date));
 				this.categoryComboBox.setValue(this.categories);
 				fileContent.removeIf(s -> (s.startsWith("layout") || s.startsWith("title") || s.startsWith("date")
@@ -198,12 +206,20 @@ public class FXMLController {
 		}
 	}
 
+	/**
+	 * Adds "**" around the selected text
+	 * @param e
+	 */
 	public void boldButtonPressed(Event e) {
 		String old = textArea.getSelectedText();
 		String newtext = textArea.getText().replace(old, "**" + old + "**");
 		textArea.setText(newtext);
 	}
 
+	/**
+	 * Set selected text to italic
+	 * @param e
+	 */
 	public void italicButtonPressed(Event e) {
 		String old = textArea.getSelectedText();
 		String newtext = textArea.getText().replace(old, "*" + old + "*");
@@ -211,6 +227,10 @@ public class FXMLController {
 
 	}
 
+	/**
+	 * Set selected text to header according to value chosen
+	 * @param e
+	 */
 	public void headerButtonPressed(Event e) {
 		String header = "";
 		switch (this.headerBox.getValue()) {
@@ -238,6 +258,10 @@ public class FXMLController {
 
 	}
 
+	/**
+	 * Opens window allowing user to add a link in text
+	 * @param e
+	 */
 	public void linkButtonPressed(Event e) {
 		int caretPos = textArea.getCaretPosition();
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
@@ -294,6 +318,11 @@ public class FXMLController {
 		});
 	}
 
+	/**
+	 * Opens file chooser in order to add an image to text
+	 * @param e
+	 * @throws IOException
+	 */
 	public void onAddPicturePressed(Event e) throws IOException {
 		int caretPos = textArea.getCaretPosition();
 		FileChooser fileChooser = new FileChooser();
@@ -305,16 +334,19 @@ public class FXMLController {
 		textArea.insertText(caretPos, "<img src=\"file://" + newImage + "\" alt=\"drawing\" width=\"200px\"/>");
 	}
 
+	/**
+	 * Save article and launch jekyll
+	 * @param e
+	 */
 	public void previewButtonPressed(Event e) {
-		post = new Post(layoutComboBox.getValue(), titleField.getText(), datePicker.getValue().toString(),
-				categoryComboBox.getValue(), textArea.getText(), null, null);
-		Categories.addCategory(post.getCategory());
-		String md = Markdown.toMarkdown(post);
-		Markdown.createMarkdownFile(md, post);
-
+		onSaveButtonPressed(null);
 		Tools.executeCommand("bundle exec jekyll serve -o", PropertiesAccess.getInstance().getLocalRepository(), true);
 	}
 
+	/**
+	 *Save article
+	 * @param e
+	 */
 	public void onSaveButtonPressed(Event e) {
 		post = new Post(layoutComboBox.getValue(), titleField.getText(), datePicker.getValue().toString(),
 				categoryComboBox.getValue(), textArea.getText(), null, null);

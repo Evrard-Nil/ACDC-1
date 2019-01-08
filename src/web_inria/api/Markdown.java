@@ -26,8 +26,8 @@ public class Markdown {
 		StringBuilder sb = new StringBuilder();
 
 		createMarkdownStructure(sb, post);
-		addImagesToMarkdown(sb, post);
-		addLinksToMarkdown(post, sb);
+		// addImagesToMarkdown(sb, post);
+		// addLinksToMarkdown(post, sb);
 
 		return sb.toString();
 	}
@@ -75,8 +75,11 @@ public class Markdown {
 	 */
 	private static void createMarkdownStructure(StringBuilder sb, Post post) {
 		sb.append("---" + "\nlayout: " + post.getLayout() + "\ntitle: \"" + post.getTitle() + "\"" + "\ndate: "
-				+ post.getDate() + "\ncategories: " + post.getCategory() + "\n---" + "\n\n*" + post.getAuthor() + "*"
-				+ "\n\n" + post.getContent() + "\n");
+				+ post.getDate() + "\ncategories: " + post.getCategory() + "\n---" + "\n\n"
+				+ post.getContent().replace(
+						"file://" + new File(PropertiesAccess.getInstance().getLocalRepository()).getAbsolutePath(),
+						File.separator + "blog")
+				+ "\n");
 	}
 
 	/**
@@ -103,6 +106,23 @@ public class Markdown {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	/**
+	 * Method that delete the markdown file
+	 * 
+	 * @param post : Post - post data
+	 */
+	public static void deleteMarkdownFile(Post post) {
+		String filename = post.getDate() + "-" + post.getTitle().replaceAll(" ", "-") + ".markdown";
+		String localRepo = PropertiesAccess.getInstance().getLocalRepository();
+
+		File file = new File(localRepo + File.separator + "_posts" + File.separator + filename);
+		if (file.delete()) {
+			System.out.println(file.getAbsolutePath() + " has been deleted.");
+		} else {
+			System.out.println(file.getAbsolutePath() + " doesn't exist.");
 		}
 	}
 

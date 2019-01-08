@@ -10,7 +10,10 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javafx.scene.control.TextInputDialog;
 
 /**
  * Class Categories that contains the methods relatives to the categories
@@ -52,7 +55,20 @@ public class Categories {
 	public static List<String> getCategories() {
 		try {
 			if (!file.exists()) {
-				file.createNewFile();
+				TextInputDialog dialog = new TextInputDialog("");
+				dialog.setResizable(true);
+				dialog.setTitle("Preferences settings");
+				dialog.setHeaderText("Choose website folder");
+				dialog.setContentText("Local repository:");
+				Optional<String> result = dialog.showAndWait();
+				result.ifPresent(name -> {
+					PropertiesAccess.getInstance().changeLocalRepository(result.get());
+					file=new File(result.get()
+							+ File.separator 
+							+ "category" 
+							+ File.separator 
+							+ "categories.txt");
+				});
 			}
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line;

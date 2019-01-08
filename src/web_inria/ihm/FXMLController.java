@@ -3,46 +3,78 @@ package web_inria.ihm;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
+
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.GridPane;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import web_inria.api.Categories;
+import web_inria.api.Markdown;
 import web_inria.api.Post;
 import web_inria.api.PropertiesAccess;
 import web_inria.api.Tools;
 
+/**
+ * Controller for FXML file
+ * 
+ * @author edaillet
+ *
+ */
 public class FXMLController {
-	public TextArea textArea = null;
-	public ComboBox<String> layoutComboBox = null;
-	public ComboBox<String> categoryComboBox = null;
-	public TextField titleField = null;
-	public DatePicker datePicker = null;
-	public TextField authorField;
+	public TextArea textArea;
+	public ComboBox<String> layoutComboBox;
+	public ComboBox<String> categoryComboBox;
+	public TextField titleField;
+	public DatePicker datePicker;
+	public WebView htmlView;
+	public ComboBox<String> headerBox;
 
 	private Boolean saved = false;
-	private Stage stage = null;
+	private Stage stage;
+	private Parser parser;
+	private HtmlRenderer renderer;
 
+	private String[] headers = { "Title", "Subtitle", "Header 3", "Header 4" };
 	private String layout;
 	private String title;
 	private String date;
-	private String author;
 	private String categories;
+	private String localRepo;
 
+	private Post post;
+
+	public FXMLController() {
+		this.parser = Parser.builder().build();
+		this.renderer = HtmlRenderer.builder().build();
+		localRepo = PropertiesAccess.getInstance().getLocalRepository();
+	}
+
+	/**
+	 * Dynamically load layouts and categories according to files in blog.
+	 */
 	public void initComboBoxes() {
 		List<String> categories = Categories.getCategories();
 		categories.forEach(e -> {
@@ -57,10 +89,26 @@ public class FXMLController {
 			}
 		}
 		this.layoutComboBox.setValue("post");
+		for (String s : headers) {
+			this.headerBox.getItems().add(s);
+		}
+		this.headerBox.setValue("Header type");
+
 	}
 
-	public FXMLController() {
+	/**
+	 * Adds listener to textArea, refreshing html each time it changes. Set the
+	 * style sheet for webview.
+	 * 
+	 */
+	public void initWebViewController() {
+		textArea.textProperty().addListener((obs, old, newValue) -> {
+			Node document = parser.parse(newValue);
+			htmlView.getEngine().loadContent((renderer.render(document)));
 
+		});
+		htmlView.getEngine().setUserStyleSheetLocation("file:" + PropertiesAccess.getInstance().getLocalRepository()
+				+ File.separator + "css" + File.separator + "style.css");
 	}
 
 	@FXML
@@ -78,7 +126,7 @@ public class FXMLController {
 				this.datePicker.setValue(null);
 				this.categoryComboBox.setValue("post");
 				this.layoutComboBox.setValue("publication");
-				this.authorField.clear();
+
 			} else {
 				return;
 			}
@@ -102,7 +150,6 @@ public class FXMLController {
 		fileContent.remove("---");
 		fileContent.remove("---");
 
-		boolean first = true;
 		for (String s : fileContent) {
 			if (s.startsWith("layout")) {
 				this.layout = s.replaceAll("layout:", "").trim();
@@ -111,81 +158,184 @@ public class FXMLController {
 				this.title = s.substring(s.indexOf("\"")).replace("\"", "");
 			}
 			if (s.startsWith("date")) {
-				this.date = s.replaceAll("date:", "").trim();
+				this.date = s.replaceAll("date:", "").trim().substring(0, 10);
 			}
 			if (s.startsWith("categories")) {
 				this.categories = s.replaceAll("categories:", "").trim();
-			}
-			if (s.startsWith("*") && s.endsWith("*") && first) {
-				this.author = s.replaceAll("*", "");
-				first = false;
 			}
 		}
 		this.layoutComboBox.setValue(this.layout);
 		this.titleField.setText(this.title);
 		this.datePicker.setValue(LocalDate.parse(this.date));
 		this.categoryComboBox.setValue(this.categories);
-		this.authorField.setText(this.author);
-		fileContent.removeIf(s -> s.startsWith("layout") || s.startsWith("title") || s.startsWith("date")
-				|| s.startsWith("categories") || s.startsWith("*") && s.endsWith("*") && s.contains(categories));
-		System.out.println(fileContent);
+		this.textArea.clear();
+		fileContent.removeIf(s -> (s.startsWith("layout") || s.startsWith("title") || s.startsWith("date")
+				|| s.startsWith("categories")));
+
+		for (String s : fileContent) {
+			this.textArea.setText(this.textArea.getText().concat(s + "\n"));
+		}
 	}
 
-	/*
-	 * Post post = askPostInformationCmd();
-	 * 
-	 * Categories.addCategory(post.getCategory());
-	 * 
-	 * String markdown = Markdown.toMarkdown(post);
-	 * Markdown.createMarkdownFile(markdown, post);
-	 * 
-	 * System.out.
-	 * println("\nStarting server, please wait. Your browser will be launch automatically."
-	 * ); Tools.executeCommand("bundle exec jekyll serve -o", localRepo, true);
-	 * 
-	 * if ( System.getProperty("os.name").toLowerCase().startsWith("windows"))
-	 * Tools.executeCmd("taskkill /F /IM Ruby*", localRepo);
-	 * System.out.println("Commiting and pushing git. Wait a moment ...");
-	 * Tools.gitCommitAndPush(gitRepo, localRepo);
-	 * 
-	 * System.out.println("Jobs finished. You can close the program.");
-	 * 
-	 */
-
-	/**
-	 * Method that ask the data for the post
-	 * 
-	 * @return Post - Object that contains the post data
-	 */
-	public static Post askPostInformationCmd() {
-		String layout = "post";
-		System.out.println("Layout: " + layout);
-
-		System.out.print("Title: ");
-		String title = Tools.getStringUserInput();
-
-		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		System.out.println("Date: " + date);
-
-		System.out.print("Category: ");
-		String category = Tools.getStringUserInput();
-
-		System.out.print("Link to the image(s) (Split by a space if multiple or leave it blank): ");
-		String imagesInputString = Tools.getStringUserInput();
-		String[] images = imagesInputString.split(" ");
-		List<String> imageList = Arrays.asList(images);
-
-		System.out.print("External links (Split by a space if multiple or leave it blank): ");
-		String linksInputString = Tools.getStringUserInput();
-		String[] links = linksInputString.split(" ");
-		List<String> linkList = Arrays.asList(links);
-
-		System.out.print("Author name: ");
-		String author = Tools.getStringUserInput();
-
-		System.out.print("Content: ");
-		String content = Tools.getStringUserInput();
-
-		return new Post(layout, title, date, category, author, content, linkList, imageList);
+	public void boldButtonPressed(Event e) {
+		String old = textArea.getSelectedText();
+		String newtext = textArea.getText().replace(old, "**" + old + "**");
+		textArea.setText(newtext);
 	}
+
+	public void italicButtonPressed(Event e) {
+		String old = textArea.getSelectedText();
+		String newtext = textArea.getText().replace(old, "*" + old + "*");
+		textArea.setText(newtext);
+
+	}
+
+	public void headerButtonPressed(Event e) {
+		String header = "";
+		switch (this.headerBox.getValue()) {
+		case "Title":
+			header = "# ";
+			break;
+		case "Subtitle":
+			header = "## ";
+			break;
+
+		case "Header 3":
+			header = "### ";
+			break;
+
+		case "Header 4":
+			header = "#### ";
+			break;
+
+		default:
+			break;
+		}
+		String old = textArea.getSelectedText();
+		String newtext = textArea.getText().replace(old, header + old.replace("#", "").trim());
+		textArea.setText(newtext);
+
+	}
+
+	public void linkButtonPressed(Event e) {
+		int caretPos = textArea.getCaretPosition();
+		Dialog<Pair<String, String>> dialog = new Dialog<>();
+		dialog.setTitle("Link Dialog");
+		dialog.setHeaderText("Add a link to the post");
+
+		// Set the button types.
+		ButtonType loginButtonType = new ButtonType("Add", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+		// Create the username and password labels and fields.
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 150, 10, 10));
+
+		TextField desc = new TextField();
+		desc.setPromptText("Description");
+		TextField link = new TextField();
+		link.setPromptText("Link");
+
+		grid.add(new Label("Description:"), 0, 0);
+		grid.add(desc, 1, 0);
+		grid.add(new Label("Link:"), 0, 1);
+		grid.add(link, 1, 1);
+
+		// Enable/Disable login button depending on whether a username was entered.
+		javafx.scene.Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+		loginButton.setDisable(true);
+
+		// Do some validation (using the Java 8 lambda syntax).
+		desc.textProperty().addListener((observable, oldValue, newValue) -> {
+			loginButton.setDisable(newValue.trim().isEmpty());
+		});
+
+		dialog.getDialogPane().setContent(grid);
+
+		// Request focus on the username field by default.
+		Platform.runLater(() -> desc.requestFocus());
+
+		// Convert the result to a username-password-pair when the login button is
+		// clicked.
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == loginButtonType) {
+				return new Pair<>(desc.getText(), link.getText());
+			}
+			return null;
+		});
+
+		Optional<Pair<String, String>> result = dialog.showAndWait();
+
+		result.ifPresent(linkDesc -> {
+			textArea.insertText(caretPos, "[" + linkDesc.getKey() + "](" + linkDesc.getValue() + ")");
+		});
+	}
+
+	public void onAddPicturePressed(Event e) throws IOException {
+		int caretPos = textArea.getCaretPosition();
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open image");
+		File image = fileChooser.showOpenDialog(stage);
+		String newImage = PropertiesAccess.getInstance().getLocalRepository() + File.separator + "images-blog"
+				+ File.separator + image.getName();
+		Files.copy(image.toPath(), new File(newImage).toPath());
+		textArea.insertText(caretPos, "<img src=\"file://" + newImage + "\" alt=\"drawing\" width=\"200px\"/>");
+	}
+
+	public void previewButtonPressed(Event e) {
+		post = new Post(layoutComboBox.getValue(), titleField.getText(), datePicker.getValue().toString(),
+				categoryComboBox.getValue(), textArea.getText(), null, null);
+		Categories.addCategory(post.getCategory());
+		String md = Markdown.toMarkdown(post);
+		Markdown.createMarkdownFile(md, post);
+
+		Tools.executeCommand("bundle exec jekyll serve -o", PropertiesAccess.getInstance().getLocalRepository(), true);
+	}
+
+	public void onSaveButtonPressed(Event e) {
+		post = new Post(layoutComboBox.getValue(), titleField.getText(), datePicker.getValue().toString(),
+				categoryComboBox.getValue(), textArea.getText(), null, null);
+		Categories.addCategory(post.getCategory());
+		String md = Markdown.toMarkdown(post);
+		Markdown.createMarkdownFile(md, post);
+	}
+
+	public void onPushButtonPressed(Event e) {
+		Tools.gitCommitAndPush(localRepo);
+	}
+
+	public void onQuitButtonPressed(Event e) {
+		System.exit(0);
+	}
+
+	public void onKillJekyllButtonPressed(Event e) {
+		if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+			Tools.executeCommand("TASKKILL -F -IM ruby.exe", localRepo, false);
+		} else {
+			Tools.process.destroyForcibly();
+		}
+	}
+
+	public void onDeleteButtonPressed(Event e) {
+		if (this.post != null) {
+			Markdown.deleteMarkdownFile(this.post);
+		}
+		this.newFilePressed(e);
+
+	}
+
+	public void onPreferenceButtonPressed(Event e) {
+		TextInputDialog dialog = new TextInputDialog(PropertiesAccess.getInstance().getLocalRepository());
+		dialog.setResizable(true);
+		dialog.setTitle("Preferences settings");
+		dialog.setHeaderText("Choose website folder");
+		dialog.setContentText("Local repository:");
+		Optional<String> result = dialog.showAndWait();
+		result.ifPresent(name -> {
+			PropertiesAccess.getInstance().changeLocalRepository(result.get());
+		});
+	}
+
 }

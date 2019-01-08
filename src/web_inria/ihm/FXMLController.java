@@ -139,41 +139,62 @@ public class FXMLController {
 
 	@FXML
 	public void openFilePressed(Event e) throws IOException {
-		List<String> fileContent = null;
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Open article");
-		File article = fileChooser.showOpenDialog(stage);
-		if (article != null) {
-			fileContent = Files.readAllLines(article.toPath());
-		} else
-			return;
-		fileContent.remove("---");
-		fileContent.remove("---");
+		
+		try {
+			List<String> fileContent = null;
+			FileChooser fileChooser = new FileChooser();
+			
+			fileChooser.setTitle("Open article");
+			File article = fileChooser.showOpenDialog(stage);
+			if (article != null) {
+				fileContent = Files.readAllLines(article.toPath());
+			} else
+				return;
+			fileContent.remove("---");
+			fileContent.remove("---");
 
-		for (String s : fileContent) {
-			if (s.startsWith("layout")) {
-				this.layout = s.replaceAll("layout:", "").trim();
+			for (String s : fileContent) {
+				if (s.startsWith("layout")) {
+					this.layout = s.replaceAll("layout:", "").trim();
+				}
+				if (s.startsWith("title")) {
+					this.title = s.substring(s.indexOf("\"")).replace("\"", "");
+				}
+				if (s.startsWith("date")) {
+					this.date = s.replaceAll("date:", "").trim().substring(0, 10);
+				}
+				if (s.startsWith("categories")) {
+					this.categories = s.replaceAll("categories:", "").trim();
+				}
 			}
-			if (s.startsWith("title")) {
-				this.title = s.substring(s.indexOf("\"")).replace("\"", "");
-			}
-			if (s.startsWith("date")) {
-				this.date = s.replaceAll("date:", "").trim().substring(0, 10);
-			}
-			if (s.startsWith("categories")) {
-				this.categories = s.replaceAll("categories:", "").trim();
-			}
-		}
-		this.layoutComboBox.setValue(this.layout);
-		this.titleField.setText(this.title);
-		this.datePicker.setValue(LocalDate.parse(this.date));
-		this.categoryComboBox.setValue(this.categories);
-		this.textArea.clear();
-		fileContent.removeIf(s -> (s.startsWith("layout") || s.startsWith("title") || s.startsWith("date")
-				|| s.startsWith("categories")));
+			this.textArea.clear();
+			try {
+				this.layoutComboBox.setValue(this.layout);
+				this.titleField.setText(this.title);
+				this.datePicker.setValue(LocalDate.parse(this.date));
+				this.categoryComboBox.setValue(this.categories);
+				fileContent.removeIf(s -> (s.startsWith("layout") || s.startsWith("title") || s.startsWith("date")
+						|| s.startsWith("categories")));
+			} catch (Exception e1) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error while reading file");
+				alert.setHeaderText("This file might not be a jekyll article");
+				alert.setContentText("Consider checking file header.");
 
-		for (String s : fileContent) {
-			this.textArea.setText(this.textArea.getText().concat(s + "\n"));
+				alert.showAndWait();
+			}
+
+			for (String s : fileContent) {
+				this.textArea.setText(this.textArea.getText().concat(s + "\n"));
+			}
+		} catch (Exception e1) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error while opening file");
+			alert.setHeaderText("This file might not be a jekyll article");
+			alert.setContentText("Consider checking file.");
+
+			alert.showAndWait();
+
 		}
 	}
 

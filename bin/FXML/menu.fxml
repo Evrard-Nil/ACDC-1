@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.web.WebView?>
+
+
+<VBox prefHeight="720.0" prefWidth="1024.0" 
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="web_inria.ihm.FXMLController" stylesheets="@..\\css\\fxml_style.css">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus >
+        <Menu text="File">
+          <items>
+            <MenuItem text="New" onAction="#newFilePressed"></MenuItem>
+            <MenuItem text="Open…" onAction="#openFilePressed"></MenuItem>
+            <MenuItem text="Save" onAction="#onSaveButtonPressed"></MenuItem>
+            <MenuItem text="Delete" onAction="#onDeleteButtonPressed"></MenuItem>
+            <SeparatorMenuItem />
+            <MenuItem text="Run Jekyll" onAction="#onKillJekyllButtonPressed"></MenuItem>
+            <MenuItem text="Push git" onAction="#onPushButtonPressed"/>
+            <SeparatorMenuItem />
+            <MenuItem text="Preferences…" onAction="#onPreferenceButtonPressed"></MenuItem>
+            <SeparatorMenuItem />
+            <MenuItem text="Quit" onAction="#onQuitButtonPressed"></MenuItem>
+          </items>	
+        </Menu>
+        <Menu text="Edit">
+          <items>
+            <MenuItem text="Add picture" onAction="#onAddPicturePressed"></MenuItem>
+            <MenuItem text="Add link" onAction="#linkButtonPressed"></MenuItem>
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <BorderPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <padding>
+        <Insets top="5" right="8" bottom="8" left="8"/>
+      </padding>
+      <top>
+        <VBox layoutX="15.0" layoutY="10.0" spacing="7.0">
+          <padding>
+            <Insets top="0" right="0" bottom="8" left="0"/>
+          </padding>
+          <FlowPane hgap="12.0">
+            <HBox prefHeight="40.0" spacing="10.0" alignment="CENTER_LEFT">
+              <Label text="Title:"/>
+              <TextField prefWidth="400.0" fx:id="titleField" />
+            </HBox>
+            <HBox prefHeight="40.0" spacing="10.0" alignment="CENTER_LEFT">
+              <Label text="Date:"/>
+              <DatePicker prefWidth="200.0" fx:id="datePicker" />
+            </HBox>
+            <HBox prefHeight="40.0" spacing="10.0" alignment="CENTER_LEFT">
+              <Label text="Category:"/>
+              <ComboBox prefWidth="150.0" fx:id="categoryComboBox" editable="true"/>
+            </HBox>
+            <HBox prefHeight="40.0" spacing="10.0" alignment="CENTER_LEFT">
+              <Label text="Layout:"/>
+              <ComboBox prefWidth="150.0" fx:id="layoutComboBox"/>
+            </HBox>
+          </FlowPane>
+          <Separator />
+
+          <HBox prefHeight="40.0" spacing="6.0">
+            <Button onAction="#boldButtonPressed">
+            <tooltip>
+            	<Tooltip  text="Set selection to bold"/>
+            </tooltip>
+              <graphic>
+                <ImageView id="boldImage">
+                  <image>
+                    <Image url="@png/bold-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button onAction="#italicButtonPressed">
+            <tooltip>
+            	<Tooltip  text="Set selection to italic"/>
+            </tooltip>
+              <graphic>
+                <ImageView id="italicImage">
+                  <image>
+                    <Image url="@png/italic-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <ComboBox onAction="#headerButtonPressed" fx:id="headerBox" prefHeight="45">
+            
+            <tooltip>
+            	<Tooltip  text="Set header for selection"/>
+            </tooltip>
+            </ComboBox>
+            <Button onAction="#linkButtonPressed">
+            <tooltip>
+            	<Tooltip  text="Add links"/>
+            </tooltip>
+              <graphic>
+                <ImageView id="linkImage">
+                  <image>
+                    <Image url="@png/link-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button onAction="#onAddPicturePressed">
+            <tooltip>
+            	<Tooltip  text="Add pictures"/>
+            </tooltip>
+              <graphic>
+                <ImageView id="previewImage">
+                  <image>
+                    <Image url="@png/expand-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button onAction="#previewButtonPressed">
+            <tooltip>
+            	<Tooltip  text="Launch preview"/>
+            </tooltip>
+              <graphic>
+                <ImageView id="uploadImage">
+                  <image>
+                    <Image url="@png/jekyll.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button onAction="#onPushButtonPressed">
+            <tooltip>
+            	<Tooltip  text="Push git"/>
+            </tooltip>
+              <graphic>
+                <ImageView id="push">
+                  <image>
+                    <Image url="@png/upload-button.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+            <Button onAction="#onKillJekyllButtonPressed">
+            <tooltip>
+            	<Tooltip  text="Kills jekyll"/>
+            </tooltip>
+              <graphic>
+                <ImageView id="kill_jekyll">
+                  <image>
+                    <Image url="@png/no-jekyll.png" requestedWidth="35.0" requestedHeight="35.0"/>
+                  </image>
+                </ImageView>
+              </graphic>
+            </Button>
+          </HBox>
+        </VBox>
+      </top>
+      <center>
+      <HBox spacing="7">
+        <TextArea fx:id="textArea" prefWidth="900">
+          <cursor>
+            <Cursor fx:constant="TEXT" />
+          </cursor>
+        </TextArea>
+        <Separator orientation="VERTICAL"/>
+        <WebView fx:id="htmlView" HBox.hgrow="ALWAYS"/>
+        </HBox>
+      </center>
+    </BorderPane>
+  </children>
+</VBox>

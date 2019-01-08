@@ -7,56 +7,49 @@ Ce projet a été réalisé dans le cadre de la formation d'ingénieur spéciali
 ***
 
 ## A propos du projet
-### Présentation
-Le but du projet est de pouvoir facilement ajouter de nouveaux articles sur un site web utilisant jekyll (plus d'informations sur https://jekyllrb.com).
-
-J'ai choisi d'implémenter cette solution en mettant en place les classes suivantes :
-![Diagramme_de_classe](./ClassDiagram.png)
-
-- Une classe `Post` qui permet de stocker les différentes informations relatives au nouveau post.
-- Une classe `Categories` qui permet de gérer les catégories d'un post via différentes méthodes (Ajout, suppression, récupération).
-- Une classe `Markdown` qui permet d'utiliser les différentes méthodes relatives au markdown.
-- Une classe `Tools` qui permet de stocker et de mettre à disposition diverses méthodes.
-- Une classe `Main` contenant la méthode `main` qui permet au programme de se lancer correctement.
-
-> Plus de détails sur les méthodes et les classes [ici](https://jgeneve.github.io//ACDC/Main.html).
-
-***
 
 ## Prérequis
 Afin que le programme fonctionne correctement il faut vérifier plusieurs choses :
 
-- Avoir une connexion internet valide.
-- Dans le `Main` avoir changé `localRepo` et `gitRepo` correspondant respectivement au dossier local contenant le site web et au lien vers le répertoire Git du dossier web.
-- Etre connecté en SSH à Git sur votre terminal. (Plus de détails [ici](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)).
+- Avoir une installation de java 8 ou plus.
+- Avoir configurer dans le fichier properties (dossier resources) le dossier local du site web.
+- Etre connecté en SSH à Git sur votre terminal ou tout du moins avoir stocké ses identifiants. (Plus de détails [ici](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)).
 - Avoir installé jekyll (Plus de détails [ici](https://jekyllrb.com/docs/installation/)).
 
 ***
 
 ## Lancement du programme
 
-1. Cloner le [projet ACDC](https://github.com/jgeneve/ACDC) depuis Git ainsi que l'[archive web](https://github.com/jgeneve/web_inria).
-2. Changer les chemins `localRepo` et `gitRepo` dans la classe `Main`
-3. Ouvrir votre CMD, se déplacer dans le dossier ACDC et executer la commande `java -cp bin Main`.  
+1. Récupérer les fichiers du dossier rendu_final/ et les placer directement dans le dossier du site.
+2. Changer les chemins `localRepo` dans le fichier config.properties
+3. Ouvrir votre shell, se placer dans le dossier du site et executer `java -jar jekyll_article_builder`
 
-***
+#### Logs ####
 
-*LOG 21/11/2018*
-- Build jekyll et lancement du serveur local de démonstration.
-- Refactoring du code existant afin rendre la transition pour la partie graphique la plus facile possible.
-- Commit et push Git après la validation par l'utilisateur.
-- Actualisation du README
+__28/11/2018 :__
+Réunion premier bilan avec tout le monde, débrief et orientation pour la suite du projet. 
 
-*LOG 31/10/2018*
-- Refactorisation du code du projet et ajout d'une nouvelle classe `Tools`
-- Test de génération du site web en local en utilisant Jekyll.
+__05/12/2018 :__
+Evaluation du code de Jordan. Découverte du diagramme de classe et fonctions de bases.
 
-*Log 24/10/2018*
-- Demande d'ajout d'images et de liens
-- Gestion des catégories et création de la classe `Categories`
-- Création du fichier markdown .md dans le dossier du site web et création de la classe `Markdown`
+__12/12/2018 :__
+Evaluation des solutions possibles. Choix de JavaFX pour l'efficacité et la gestion de HTML. De plus, c'est l'occasion de découvrir JFX pour moi. 
+Création d'une interface de base.
 
-*LOG 17/10/2018*
-- Analyse du projet et création de celui-ci
-- Récupération des informations du post via la CMD
-- Génération des classes de base (`Main` & `Post`)
+__19/12/2018 :__
+Ajout des fonctions d'édition de texte de base:
+- Bold
+- Italic
+- Ajout d'image
+- Ajout de lier
+- Ajout de titre
+
+
+__28/12/2018 :__
+Semaine sans activité.
+
+__08/01/2019 :__
+- Ajout d'un rendu HTML du markdown.
+- Ajout de la gestion de jekyll
+- Ajout de la gestion de Git
+- Finalisation de l'interface

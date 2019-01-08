@@ -355,14 +355,25 @@ public class FXMLController {
 		Markdown.createMarkdownFile(md, post);
 	}
 
+	/**
+	 * Commits and push
+	 * @param e
+	 */
 	public void onPushButtonPressed(Event e) {
 		Tools.gitCommitAndPush(localRepo);
 	}
 
+	/**
+	 * Quits app. 
+	 */
 	public void onQuitButtonPressed(Event e) {
 		System.exit(0);
 	}
 
+	/**
+	 * Kills jekyll if needed
+	 * @param e
+	 */
 	public void onKillJekyllButtonPressed(Event e) {
 		if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
 			Tools.executeCommand("TASKKILL -F -IM ruby.exe", localRepo, false);
@@ -370,7 +381,12 @@ public class FXMLController {
 			Tools.process.destroyForcibly();
 		}
 	}
+	
 
+	/**
+	 * Delete markdown article
+	 * @param e
+	 */
 	public void onDeleteButtonPressed(Event e) {
 		if (this.post != null) {
 			Markdown.deleteMarkdownFile(this.post);
@@ -379,6 +395,10 @@ public class FXMLController {
 
 	}
 
+	/**
+	 * Open windows allowing user to change local repo
+	 * @param e
+	 */
 	public void onPreferenceButtonPressed(Event e) {
 		TextInputDialog dialog = new TextInputDialog(PropertiesAccess.getInstance().getLocalRepository());
 		dialog.setResizable(true);

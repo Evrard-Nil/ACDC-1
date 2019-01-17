@@ -62,14 +62,12 @@ public class FXMLController {
 	private String title;
 	private String date;
 	private String categories;
-	private String localRepo;
 
 	private Post post;
 
 	public FXMLController() {
 		this.parser = Parser.builder().build();
 		this.renderer = HtmlRenderer.builder().build();
-		localRepo = PropertiesAccess.getInstance().getLocalRepository();
 	}
 
 	/**
@@ -360,7 +358,7 @@ public class FXMLController {
 	 * @param e
 	 */
 	public void onPushButtonPressed(Event e) {
-		Tools.gitCommitAndPush(localRepo);
+		Tools.gitCommitAndPush(PropertiesAccess.getInstance().getLocalRepository());
 	}
 
 	/**
@@ -376,7 +374,7 @@ public class FXMLController {
 	 */
 	public void onKillJekyllButtonPressed(Event e) {
 		if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
-			Tools.executeCommand("TASKKILL -F -IM ruby.exe", localRepo, false);
+			Tools.executeCommand("TASKKILL -F -IM ruby.exe", PropertiesAccess.getInstance().getLocalRepository(), false);
 		} else {
 			Tools.process.destroyForcibly();
 		}

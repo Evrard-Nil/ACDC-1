@@ -11,7 +11,7 @@
 
 
 <VBox prefHeight="720.0" prefWidth="1024.0" 
-  xmlns:fx="http://javafx.com/fxml/1" fx:controller="web_inria.ihm.FXMLController" stylesheets="@..\\css\\fxml_style.css">
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="web_inria.ihm.FXMLController" stylesheets="@css/fxml_style.css">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus >
@@ -24,8 +24,6 @@
             <SeparatorMenuItem />
             <MenuItem text="Run Jekyll" onAction="#onKillJekyllButtonPressed"></MenuItem>
             <MenuItem text="Push git" onAction="#onPushButtonPressed"/>
-            <SeparatorMenuItem />
-            <MenuItem text="Preferences…" onAction="#onPreferenceButtonPressed"></MenuItem>
             <SeparatorMenuItem />
             <MenuItem text="Quit" onAction="#onQuitButtonPressed"></MenuItem>
           </items>	

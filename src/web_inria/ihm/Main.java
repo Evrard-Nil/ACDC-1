@@ -1,5 +1,6 @@
 package web_inria.ihm;
 
+import java.io.File;
 import java.net.URL;
 
 import javafx.application.Application;
@@ -24,7 +25,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Jekyll article editor");
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(new URL("file:resources/FXML/menu.fxml"));
+		loader.setLocation(getClass().getResource("/FXML/menu.fxml"));
 		Pane vbox = loader.<Pane>load();
 		FXMLController controller = loader.getController();
 		controller.setStage(primaryStage);
@@ -34,7 +35,7 @@ public class Main extends Application {
 
 		Scene scene = new Scene(vbox);
 		primaryStage.setScene(scene);
-		primaryStage.getIcons().add(new Image("file:resources/fxml/png/jekyll_Icon.png"));
+		primaryStage.getIcons().add(new Image("file:fxml/png/jekyll_Icon.png"));
 		primaryStage.show();
 	}
 

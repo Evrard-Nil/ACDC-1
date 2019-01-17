@@ -63,7 +63,7 @@ public class FXMLController {
 	private String date;
 	private String categories;
 
-	private Post post;
+	public Post post;
 
 	public FXMLController() {
 		this.parser = Parser.builder().build();
@@ -391,22 +391,6 @@ public class FXMLController {
 		}
 		this.newFilePressed(e);
 
-	}
-
-	/**
-	 * Open windows allowing user to change local repo
-	 * @param e
-	 */
-	public void onPreferenceButtonPressed(Event e) {
-		TextInputDialog dialog = new TextInputDialog(PropertiesAccess.getInstance().getLocalRepository());
-		dialog.setResizable(true);
-		dialog.setTitle("Preferences settings");
-		dialog.setHeaderText("Choose website folder");
-		dialog.setContentText("Local repository:");
-		Optional<String> result = dialog.showAndWait();
-		result.ifPresent(name -> {
-			PropertiesAccess.getInstance().changeLocalRepository(result.get());
-		});
 	}
 
 }

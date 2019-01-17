@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,20 +56,7 @@ public class Categories {
 	public static List<String> getCategories() {
 		try {
 			if (!file.exists()) {
-				TextInputDialog dialog = new TextInputDialog("");
-				dialog.setResizable(true);
-				dialog.setTitle("Preferences settings");
-				dialog.setHeaderText("Choose website folder");
-				dialog.setContentText("Local repository:");
-				Optional<String> result = dialog.showAndWait();
-				result.ifPresent(name -> {
-					PropertiesAccess.getInstance().changeLocalRepository(result.get());
-					file=new File(result.get()
-							+ File.separator 
-							+ "category" 
-							+ File.separator 
-							+ "categories.txt");
-				});
+				throw new UnexpectedException("No file Categories.txt found at"+file.getAbsolutePath());
 			}
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line;

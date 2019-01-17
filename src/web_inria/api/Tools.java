@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
-
+import web_inria.ihm.FXMLController;;
 /**
  * Class Tools that contains different methods
  * 
@@ -73,7 +73,7 @@ public class Tools {
 	 */
 	public static void gitCommitAndPush(String localRepository) {
 		Tools.executeCmd("git add .", localRepository);
-		Tools.executeCmd("git commit -m \"Add markdown file\"", localRepository);
+		Tools.executeCmd("git commit -m \"Add markdown file \"", localRepository);
 		Tools.executeCmd("git push", localRepository);
 	}
 }

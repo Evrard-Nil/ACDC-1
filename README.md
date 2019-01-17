@@ -20,18 +20,17 @@ Afin de suivre l'avancement du projet, il est attendu chaque semaine un fichier 
 ## Prérequis
 Afin que le programme fonctionne correctement il faut vérifier plusieurs choses :
 
-- Avoir une installation de java 8 ou plus.
-- Avoir configurer dans le fichier properties (dossier resources) le dossier local du site web.
+- Avoir une installation de **java 8**.
 - Etre connecté en SSH à Git sur votre terminal ou tout du moins avoir stocké ses identifiants. (Plus de détails [ici](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)).
 - Avoir installé jekyll (Plus de détails [ici](https://jekyllrb.com/docs/installation/)).
+- Créer un fichier Categories.txt dans le dossier category/ du blog jekyll contenant les catégories souhaitées pour les publications. L'interface permet de mettre à jour ces catégories par la suite.
 
 ***
 
 ## Lancement du programme
 
-1. Récupérer les fichiers du dossier rendu_final/ et les placer directement dans le dossier du site.
-2. Changer les chemins `localRepo` dans le fichier config.properties
-3. Ouvrir votre shell, se placer dans le dossier du site et executer `java -jar jekyll_article_builder`
+1. Récupérer le jar du dossier rendu_final/ et le placer directement dans le dossier du site.
+3. Ouvrir votre shell, se placer dans le dossier du site et executer `java -jar ACDC.jar`
 
 #### Logs ####
 
@@ -62,3 +61,7 @@ __08/01/2019 :__
 - Ajout de la gestion de jekyll
 - Ajout de la gestion de Git
 - Finalisation de l'interface
+
+__016/01/2019 :__
+- Gestion des dépedances par Maven pour une meilleure portabilité
+- Gestion du path sans besoin d'intervention de l'utilisateur.
